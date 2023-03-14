@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<parameters>
+
+	<!--	
+	==============================
+	Engine Parameters
+	==============================
+	
+	This file contains parameters allowing to change and configure default Runtime behaviors.
+	You can modify defaults ports used by the different Runtime services, its log database, etc.
+	Changing a parameter requires a restart of the Runtime to be effective.
+	
+	Note that you can use environment variables and java properties in values, using the following syntax:
+	${java.property|environment.variable:<VARIABLE_NAME>[:<DEFAULT_VALUE>]}
+	
+	E.g.
+	${environment.variable:XDI_RUNTIME_START_SCHEDULER_ENGINE:true}
+	
+	For further information consult reference documentation and the comments of this file.
+
+	-->
+	<engineParameters>
+	
+		<!-- 
+		==============================
+		Common Parameters 
+		==============================
+		-->
+		
+		<parameter name="userLogDefaultName" value="SESSIONLOG"/>
+		<parameter name="debugLevel" value="0"/>
+		<parameter name="temporaryFolder" value="temp"/>
+		<parameter name="sessionFolder" value="/sessions"/>
+		<parameter name="repositoryCacheFolder" value="build/cache/repository"/>
+		<parameter name="deliveryExtension" value="deliv"/>
+		<parameter name="defaultFetchSize" value="1000"/>
+		<parameter name="defaultBatchSize" value="1000"/>
+		<parameter name="defaultJdbcConnectionTimeout" value="100"/>
+		<parameter name="defaultJdbcQueryTimeout" value="100"/>
+		<parameter name="defaultSessionReportNumber" value="10"/>
+		<parameter name="memoryLogScanDelay" value="10000"/>
+		
+		<!--
+			This defines what level of information is logged inside log database for each session executed by the Runtime.  
+			The higher the value is the higher information are logged.
+			Possible values are the following: -1, 0, 100, 200, 300, 400
+			
+			Note that is applies only for sessions on which the log level is not defined manually at execution.
+			Refer to the reference documentation for further information.
+		-->
+		<parameter name="defaultSessionLogLevel" value="{environment.variable:XDI_RUNTIME_SESSIONLOG_DEFAULT_LOGLEVEL:400}"/>
+		
+		<!--
+		  This defines if the default behaviour for child sessions is to inherit from the parent session loglevel (true / false).
+		  This applies only for child sessions which are executed without a custom log level defined.
+		  Child sessions executed with a custom log level will simply use the custom loglevel, no matter the parent session loglevel.
+		
+		  Note that this defines the default behaviour, you can also manually specify on a Process that it should / should not inherit from parent's session log level.
+		  Refer to the reference documentation for further information.
+		-->
+		<parameter name="defaultChildSessionLogLevelInheritance" value="true"/>	
+				
+		<!--  Batch size used for log database purge operations.
+		When this parameter is not specified the queries performed by purge operations are processing all the rows at once.
+		Specifying a batch size can help to avoid overloading the database when performing purge operations. -->
+		
+		<parameter name="logPurgeBatchSize" value="{environment.variable:XDI_RUNTIME_SESSIONLOG_PURGE_BATCH_SIZE:0}"/>
+
+		<!-- Jython version to use for scripting actions.
+		If you want to use another version, create a folder under the following location and put inside the corresponding Jython libraries.
+		The name of the folder you choose will be the name of the version to specify in this parameter.
+		<Runtime Installation Folder>/lib/jython/<jythonVersion>
+			
+		<parameter name="jythonVersion" value="2.7"/>
+		-->
+		<!-- 
+			Defines when Modules are loaded by the Runtime. 
+				- "onStartup" : Modules are loaded at the startup of the Runtime. Any new Module added or modified requires the Runtime to be restarted before being able to take it into account. 
+				- "dynamic" : Modules are re-loaded dynamically when their content changes  
+		-->
+		<parameter name="moduleRefreshMode" value="dynamic" />
+		
+		<!--
+		==============================
+		Services Parameters
+		==============================
+		-->
+		
+		<parameter name="launchSchedulerEngine" value="${environment.variable:XDI_RUNTIME_START_SCHEDULER_ENGINE:true}"/>
+		<parameter name="launchExecutionEngine" value="${environment.variable:XDI_RUNTIME_START_EXECUTION_ENGINE:true}"/>
+		<parameter name="startInternalDb" value="${environment.variable:XDI_RUNTIME_START_INTERNAL_DB:false}"/>
+		<parameter name="httpHost" value="localhost"/>
+
+		<!--
+		==============================
+		Services Ports
+		==============================
+		-->
+		
+		<parameter name="internalDbTcpPort" value="42100"/>
+		<parameter name="internalDbWebPort" value="42101"/>
+		<parameter name="httpServerPort" value="42200"/>
+
+		<!--
+		==============================
+		Services Security
+		==============================
+		-->
+
+		<!--<parameter name="webServiceSecureProtocol" value="TLSv1.2"/>
+		<parameter name="webServiceKeyStoreFile" value="/opt/semarchy/xdi-runtime/properties/mykeystore.jks"/>
+		<parameter name="webServiceKeyStoreType" value="JKS"/> 
+		<parameter name="webServiceKeyStorePassword" value="keystore_password"/> 
+		<parameter name="webServiceKeyAlias" value="key_alias"/>
+		<parameter name="webServiceKeyPassword" value="key_password"/>-->
+
+
+		<!--
+		==============================
+	    Password Ciphering    
+		==============================
+		-->
+		<!-- Name of the key that should be used for ALL password encryption / decryption performed by the Runtime.
+			 It must match a key defined under a keystore in the Runtime configuration, example of keystores being documented further in this file.
+			 This parameter applies to every password encryption / decryption performed by the Runtime.
+		-->
+		
+		<!-- <parameter name="globalPasswordCipheringKeyName" value="key_functional_name"/> -->
+		
+		<!-- Name of the key that should be used for delivery password encryption / decryption performed by the Runtime.
+			 It must match a key defined under a keystore in the Runtime configuration, example of keystores being documented further in this file.
+			 This parameter applies only for password defined in deliveries, and overrides the key specified in "globalPasswordCipheringKeyName", if any.
+		-->
+		
+		<!-- <parameter name="deliveryPasswordCipheringKeyName" value="key_functional_name"/> -->
+
+		<!--
+		==============================
+		Standard Output
+		==============================
+		-->
+		
+		<parameter name="stackTraceOnStdOutput" value="true"/>
+		<parameter name="statisticsOnStdOutput" value="true"/>
+		<parameter name="sumVariables" value="SQL_NB_ROWS, SQL_STAT_INSERT,SQL_STAT_UPDATE, SQL_STAT_DELETE,SQL_STAT_ERROR,XML_NB_ELEMENTS,XML_NB_ATTRIBUTES,OUT_FILE_SIZE, IN_FILE_SIZE,XML_NB_TEXTS,SQL_PK_ROWS,SQL_CAR_ROWS,WSDL_NB_DONE,WSDL_NB_ERROR"/>
+		
+		<!--
+		==============================
+		Runtime Web Services Parameters
+		==============================
+		-->
+		
+		<!-- Maximum number of concurrent threads allowed on the SOAP server. If number exceeds this size, sessions are put on hold.
+			 When not specified the Runtime will use a variable pool which will adapt itself to the number of requests.
+		-->	
+		<!--<parameter name="soapServerThreadPoolSize" value="10"/>-->
+		
+		<!-- The three parameters below define if the Runtime should keep the Input / Output / Fault files created when a published Web Service is invoked.
+			 The following values are available: yes, no, if_error
+		-->		
+		<parameter name="webServiceInputMessageKeep" value="if_error"/>
+		<parameter name="webServiceOutputMessageKeep" value="if_error"/>
+		<parameter name="webServiceFaultMessageKeep" value="if_error"/>
+
+	</engineParameters>
+	
+	<!--	
+	==============================
+	Process Actions Parameters
+	==============================
+	
+	This bloc can be used to override the default values of Process Actions parameters.
+	Only a few of them support this from now, which you can find in the example below.
+	
+	Simply uncomment it and configure it to meet your requirements.
+	-->
+	
+	<!-- 
+	<actionConfiguration>
+   		<action className="com.indy.engine.actionCodes.sqlToParameters">
+    		<property name="defaultDateTimeFormat" value="yyyy-MM-dd"/>
+   		</action>
+  	</actionConfiguration>
+  	-->
+  
+	<!--	
+	==============================
+	Keystores
+	==============================
+	
+	Define here your keystores.
+	The keystores are Java files which can containing certificates and keys for encryption decryption.
+	
+	At the moment the keystores defined here can only be used for defining the key for password encryption / decryption.
+	See “globalPasswordCipheringKeyName” and  “deliveryPasswordCipheringKeyName” parameters.
+	
+	-->
+	
+	<!-- Here is an example of keystores configuration -->
+	<!--<keystores>
+		<keystore path="path_to_keystore_file" password="keystore_password" type="JKS">
+			<key name="key_functional_name" alias="key_alias_in_keystore" password="key_password"/> 	
+		</keystore>
+		<keystore path="path_to_keystore_file" password="keystore_password" type="JCEKS">
+			<key name="key_functional_name_2" alias="key_alias_in_keystore" password="key_password" blockCipherModeOperation="PCBC/PKCS5Padding"/> 	
+		</keystore>
+	</keystores>-->
+
+	<!-- Delivery Repositories Configuration -->	
+	<repositories>
+		<deliveryRepository name="default" class="com.semarchy.xdi.runtime.repository.delivery.FileDeliveryRepositoryPlugin" default="true">
+			<parameter name="folder" value="build/deliveries/"/>
+		</deliveryRepository>
+		
+		<deliveryRepository name="webservices" class="com.semarchy.xdi.runtime.repository.delivery.FileDeliveryRepositoryPlugin" default="true" webservice="true">
+			<parameter name="folder" value="build/deliveries/webservices/"/>
+		</deliveryRepository>
+	</repositories>
+
+	<!-- Security Configuration (users and IP/Hostname Filtering) -->
+	<security>
+		<user name="admin"  uncryptedPassword="admin-password" roles="Admin"/>
+		<user name="developer"  uncryptedPassword="developer-password" roles="Connect View Execute ExecuteAPI"/>
+		<user name="api-user"  uncryptedPassword="api-user-password" roles="Connect ExecuteAPI"/>
+		<user name="viewer"  uncryptedPassword="viewer-password" roles="Connect View"/>
+		<!--<allow address="localhost"/>		-->
+	</security>
+
+	<!-- External Value Resolver Configuration	-->
+	<externalValueResolver>
+	<!--	<resolver prefix="foo/" class="com.semarchy.xdi.externalvalueresolver.impl.SimpleExternalValueResolverPlugin">
+			<parameter name="filePath" value="properties/samples/externalValueResolver/simple.external.values"/>
+			<parameter name="refreshMode" value="dynamic"/>
+		</resolver> -->
+	</externalValueResolver>
+
+	<!-- Session Log Database Configuration	-->
+	<logs>
+		<!--	
+		==============================
+		PostgreSQL Log Database
+		==============================
+		-->
+		<log userLogName="SESSIONLOG" autoUpdate="true" userLogClass="com.semarchy.xdi.runtime.sessionlog.RdbmsLogger">
+			<parameter name="userLogRdbmsDriver" value="${environment.variable:XDI_RUNTIME_SESSIONLOG_DB_JDBC_DRIVER_CLASS_NAME:org.postgresql.Driver}"/>
+			<parameter name="userLogRdbmsUrl" value="${environment.variable:XDI_RUNTIME_SESSIONLOG_DB_JDBC_URL:default}"/>
+			<parameter name="userLogRdbmsUser" value="${environment.variable:XDI_RUNTIME_SESSIONLOG_DB_JDBC_USER:default}"/>
+			<parameter name="userLogRdbmsPassword" value="${environment.variable:XDI_RUNTIME_SESSIONLOG_DB_JDBC_PASSWORD:default}"/>
+			<!--<parameter name="userLogRdbmsEncryptedPassword" value="${environment.variable:XDI_RUNTIME_LOGDB_JDBC_PWD:}"/>-->
+			<parameter name="userLogRdbmsModule" value="BACKEND-DATABASE"/>
+			<parameter name="userLogRdbmsSchemaName" value="${environment.variable:XDI_RUNTIME_SESSIONLOG_DB_JDBC_SCHEMA:public}"/>
+			<parameter name="userLogRdbmsVarcharType" value="varchar"/>
+			<parameter name="userLogRdbmsVarcharMaxSize" value="1000"/>
+			<parameter name="userLogRdbmsNumericType" value="numeric"/>
+			<parameter name="userLogRdbmsClobType" value="text"/>
+			<parameter name="userLogRdbmsBlobType" value="bytea"/>
+			<parameter name="userLogRdbmsUseSchemaNameForIndexCreation" value="false"/>
+			<parameter name="userLogRdbmsDeleteSyntaxe" value="Delete from"/>
+			<parameter name="userLogRdbmsCompressedLevel" value="bestCompression"/>
+			<parameter name="userLogRdbmsDeliveryFormat" value="text"/>
+			<parameter name="userLogRdbmsPropertyMaxVarcharSize" value="1000"/>
+			<parameter name="userLogRdbmsPropertyMaxClobSize" value="-1"/>
+			<parameter name="userLogRdbmsPropertyBinaryFormat" value="compressed"/>
+			<parameter name="userLogRdbmsPoolEnabled" value="true"/>
+			<parameter name="userLogRdbmsPoolConnectionTimeout" value="30000"/>
+			<parameter name="userLogRdbmsPoolIdleTimeout" value="600000"/>
+			<parameter name="userLogRdbmsPoolKeepAliveTime" value="0"/>
+			<parameter name="userLogRdbmsPoolMaxLifetime" value="1800000"/>
+			<parameter name="userLogRdbmsPoolMinimumIdle" value="0"/>
+			<parameter name="userLogRdbmsPoolMaximumSize" value="20"/>
+			<parameter name="userLogRdbmsPoolValidationTimeout" value="5000"/>
+		</log>
+		
+		<log userLogName="DISABLED" autoUpdate="false" userLogClass="com.semarchy.xdi.runtime.sessionlog.EmptyLogger">
+		</log>
+	</logs>
+
+</parameters>

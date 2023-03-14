@@ -1,0 +1,61 @@
+version: '3.8'
+
+networks:
+  semarchy-net:
+    driver: bridge
+services:
+ semarchy-xdi-runtime:
+  image: semarchy/xdi-runtime:2023.2.0
+  networks:
+  - semarchy-net
+  container_name: semarchy-xdi-runtime
+  depends_on:
+    semarchy-xdi-runtime-backend-database:
+      condition: service_healthy
+  ports:
+  # Runtime HTTP Port
+  - '42200:42200'
+  environment:
+  - XDI_RUNTIME_START_SCHEDULER_ENGINE=true
+  - XDI_RUNTIME_START_EXECUTION_ENGINE=true
+  - XDI_RUNTIME_SESSIONLOG_DB_JDBC_DRIVER_CLASS_NAME=org.postgresql.Driver
+  - XDI_RUNTIME_SESSIONLOG_DB_JDBC_URL=jdbc:postgresql://semarchy-xdi-runtime-backend-database:5432/postgres
+  - XDI_RUNTIME_SESSIONLOG_DB_JDBC_USER=postgres
+  - XDI_RUNTIME_SESSIONLOG_DB_JDBC_PASSWORD=postgres
+  - XDI_RUNTIME_SESSIONLOG_DB_JDBC_SCHEMA=public
+  - XDI_RUNTIME_SESSIONLOG_DEFAULT_LOGLEVEL=400
+  #- XDI_RUNTIME_SESSIONLOG_PURGE_BATCH_SIZE=0
+  #- XDI_RUNTIME_OPTS=
+  volumes:
+  - './shared-resources/modules:/opt/semarchy/xdi-runtime/modules'
+  - './shared-resources/properties/engineScheduler.properties:/opt/semarchy/xdi-runtime/properties/engineScheduler.properties'
+  - './shared-resources/properties/engineParameters.xml:/opt/semarchy/xdi-runtime/properties/engineParameters.xml'
+ semarchy-xdi-runtime-backend-database:
+    image: postgres:14
+    user: postgres
+    ports:
+      - '5433:5432'
+    networks:
+      - semarchy-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./shared-resources/init-database-resources.sql:/docker-entrypoint-initdb.d/init-database-resources.sql
+      # (Optional) Volumes persisting the database container data
+      - pgdata:/var/lib/postgresql/data
+      - pgconf:/etc/postgresql
+      - pglog:/var/log/postgresql
+volumes:
+  pgdata:
+    driver: local
+  pgconf:
+    driver: local
+  pglog:
+    driver: local
