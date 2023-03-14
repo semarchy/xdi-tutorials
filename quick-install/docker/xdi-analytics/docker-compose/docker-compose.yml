@@ -53,13 +53,13 @@ services:
     volumes:
       # - ./create-schemas.sql:/docker-entrypoint-initdb.d/create-schemas.sql
       # (Optional) Volumes persisting the database container data
-      - pgdata:/var/lib/postgresql/data
-      - pgconf:/etc/postgresql
-      - pglog:/var/log/postgresql
+      - pgdata-semarchy-xdi-analytics:/var/lib/postgresql/data
+      - pgconf-semarchy-xdi-analytics:/etc/postgresql
+      - pglog-semarchy-xdi-analytics:/var/log/postgresql
 volumes:
-  pgdata:
+  pgdata-semarchy-xdi-analytics:
     driver: local
-  pgconf:
+  pgconf-semarchy-xdi-analytics:
     driver: local
-  pglog:
+  pglog-semarchy-xdi-analytics:
     driver: local

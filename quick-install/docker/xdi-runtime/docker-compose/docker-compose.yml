@@ -49,13 +49,13 @@ services:
     volumes:
       - ./shared-resources/init-database-resources.sql:/docker-entrypoint-initdb.d/init-database-resources.sql
       # (Optional) Volumes persisting the database container data
-      - pgdata:/var/lib/postgresql/data
-      - pgconf:/etc/postgresql
-      - pglog:/var/log/postgresql
+      - pgdata-semarchy-xdi-runtime:/var/lib/postgresql/data
+      - pgconf-semarchy-xdi-runtime:/etc/postgresql
+      - pglog-semarchy-xdi-runtime:/var/log/postgresql
 volumes:
-  pgdata:
+  pgdata-semarchy-xdi-runtime:
     driver: local
-  pgconf:
+  pgconf-semarchy-xdi-runtime:
     driver: local
-  pglog:
+  pglog-semarchy-xdi-runtime:
     driver: local
