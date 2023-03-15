@@ -38,7 +38,7 @@ services:
     image: postgres:14
     user: postgres
     ports:
-      - '5432:5432'
+      - '5434:5432'
     networks:
       - semarchy-net
     healthcheck:
