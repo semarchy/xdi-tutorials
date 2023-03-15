@@ -10,7 +10,7 @@ services:
     ports:
       - '8098:8080'
     depends_on:
-      semarchy-database:
+      semarchy-xdi-analytics-backend-database:
         condition: service_healthy
     networks:
       - semarchy-net
@@ -18,7 +18,7 @@ services:
     environment:
       # Backend database access
       - XDI_ANALYTICS_DB_JDBC_DRIVER_CLASS_NAME=org.postgresql.Driver
-      - XDI_ANALYTICS_DB_JDBC_URL=jdbc:postgresql://semarchy-database:5432/postgres
+      - XDI_ANALYTICS_DB_JDBC_URL=jdbc:postgresql://semarchy-xdi-analytics-backend-database:5432/postgres
       - XDI_ANALYTICS_DB_JDBC_USERNAME=postgres
       - XDI_ANALYTICS_DB_JDBC_PASSWORD=postgres
       # Default user logins
@@ -34,7 +34,7 @@ services:
       - ./shared-resources/tomcat-additional-libraries:/usr/local/tomcat/additional-libraries
       - ./shared-resources/tomcat-configuration-files/context.xml:/usr/local/tomcat/conf/context.xml
       - ./shared-resources/tomcat-configuration-files/tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml
-  semarchy-database:
+  semarchy-xdi-analytics-backend-database:
     image: postgres:14
     user: postgres
     ports:
