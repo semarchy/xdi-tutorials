@@ -30,6 +30,7 @@ services:
   - './shared-resources/modules:/opt/semarchy/xdi-runtime/modules'
   - './shared-resources/properties/engineScheduler.properties:/opt/semarchy/xdi-runtime/properties/engineScheduler.properties'
   - './shared-resources/properties/engineParameters.xml:/opt/semarchy/xdi-runtime/properties/engineParameters.xml'
+  - './shared-resources/deliveries/:/opt/semarchy/xdi-runtime/build/deliveries/'
  semarchy-xdi-runtime-backend-database:
     image: postgres:14
     user: postgres
@@ -46,7 +47,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
-    volumes:
+    volumes:    
       - ./shared-resources/init-database-resources.sql:/docker-entrypoint-initdb.d/init-database-resources.sql
       # (Optional) Volumes persisting the database container data
       - pgdata-semarchy-xdi-runtime:/var/lib/postgresql/data
