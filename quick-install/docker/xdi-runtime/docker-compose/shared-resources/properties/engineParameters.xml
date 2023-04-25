@@ -48,7 +48,7 @@
 			Note that is applies only for sessions on which the log level is not defined manually at execution.
 			Refer to the reference documentation for further information.
 		-->
-		<parameter name="defaultSessionLogLevel" value="{environment.variable:XDI_RUNTIME_SESSIONLOG_DEFAULT_LOGLEVEL:400}"/>
+		<parameter name="defaultSessionLogLevel" value="${environment.variable:XDI_RUNTIME_SESSIONLOG_DEFAULT_LOGLEVEL:400}"/>
 		
 		<!--
 		  This defines if the default behaviour for child sessions is to inherit from the parent session loglevel (true / false).
@@ -64,7 +64,7 @@
 		When this parameter is not specified the queries performed by purge operations are processing all the rows at once.
 		Specifying a batch size can help to avoid overloading the database when performing purge operations. -->
 		
-		<parameter name="logPurgeBatchSize" value="{environment.variable:XDI_RUNTIME_SESSIONLOG_PURGE_BATCH_SIZE:0}"/>
+		<parameter name="logPurgeBatchSize" value="${environment.variable:XDI_RUNTIME_SESSIONLOG_PURGE_BATCH_SIZE:0}"/>
 
 		<!-- Jython version to use for scripting actions.
 		If you want to use another version, create a folder under the following location and put inside the corresponding Jython libraries.
