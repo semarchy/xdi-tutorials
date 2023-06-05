@@ -88,7 +88,6 @@
 		
 		<parameter name="launchSchedulerEngine" value="${environment.variable:XDI_RUNTIME_START_SCHEDULER_ENGINE:true}"/>
 		<parameter name="launchExecutionEngine" value="${environment.variable:XDI_RUNTIME_START_EXECUTION_ENGINE:true}"/>
-		<parameter name="startInternalDb" value="${environment.variable:XDI_RUNTIME_START_INTERNAL_DB:false}"/>
 		<parameter name="httpHost" value="localhost"/>
 
 		<!--
@@ -97,8 +96,6 @@
 		==============================
 		-->
 		
-		<parameter name="internalDbTcpPort" value="42100"/>
-		<parameter name="internalDbWebPort" value="42101"/>
 		<parameter name="httpServerPort" value="42200"/>
 
 		<!--
@@ -113,6 +110,8 @@
 		<parameter name="webServiceKeyStorePassword" value="keystore_password"/> 
 		<parameter name="webServiceKeyAlias" value="key_alias"/>
 		<parameter name="webServiceKeyPassword" value="key_password"/>-->
+		<parameter name="enableAccessRestrictionOverHTTP" value="true"/>
+		
 
 
 		<!--
