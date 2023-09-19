@@ -88,7 +88,6 @@
 		
 		<parameter name="launchSchedulerEngine" value="${environment.variable:XDI_RUNTIME_START_SCHEDULER_ENGINE:true}"/>
 		<parameter name="launchExecutionEngine" value="${environment.variable:XDI_RUNTIME_START_EXECUTION_ENGINE:true}"/>
-		<parameter name="startInternalDb" value="${environment.variable:XDI_RUNTIME_START_INTERNAL_DB:false}"/>
 		<parameter name="httpHost" value="localhost"/>
 
 		<!--
@@ -97,8 +96,6 @@
 		==============================
 		-->
 		
-		<parameter name="internalDbTcpPort" value="42100"/>
-		<parameter name="internalDbWebPort" value="42101"/>
 		<parameter name="httpServerPort" value="42200"/>
 
 		<!--
@@ -113,7 +110,7 @@
 		<parameter name="webServiceKeyStorePassword" value="keystore_password"/> 
 		<parameter name="webServiceKeyAlias" value="key_alias"/>
 		<parameter name="webServiceKeyPassword" value="key_password"/>-->
-
+		<parameter name="enableAccessRestrictionOverHTTP" value="true"/>
 
 		<!--
 		==============================
@@ -225,6 +222,45 @@
 		<user name="viewer"  uncryptedPassword="viewer-password" roles="Connect View"/>
 		<!--<allow address="localhost"/>		-->
 	</security>
+
+	<!--	
+	==============================
+	Scheduler Configuration
+	==============================
+	
+	Define here your scheduler configuration to change the default behaviors.
+	It can be used for instance to store all the schedules inside a specific database.
+	The scheduler configuration can also be specified in a separate file by using the node syntax below.
+	
+	<scheduler file="./scheduler.xml"/>
+	
+	-->
+	<scheduler>
+		<!-- Main properties -->
+		<parameter name="org.quartz.scheduler.instanceName" value="XDI_RUNTIME_SCHEDULER"/>
+		<parameter name="org.quartz.scheduler.instanceId" value="XDI_RUNTIME_SCHEDULER"/>
+		<!-- Configure ThreadPool -->
+		<parameter name="org.quartz.threadPool.class" value="org.quartz.simpl.SimpleThreadPool"/>
+		<parameter name="org.quartz.threadPool.threadCount" value="50"/>
+		<parameter name="org.quartz.threadPool.threadPriority" value="5"/>
+		<!-- Configure Jobstore -->
+		<parameter name="org.quartz.jobStore.misfireThreshold" value="10000"/>
+		<parameter name="org.quartz.jobStore.class" value="org.quartz.impl.jdbcjobstore.JobStoreTX"/>
+		<parameter name="org.quartz.jobStore.driverDelegateClass" value="org.quartz.impl.jdbcjobstore.PostgreSQLDelegate"/>
+		<parameter name="org.quartz.jobStore.useProperties" value="false"/>
+		<parameter name="org.quartz.jobStore.dataSource" value="database01"/>
+		<parameter name="org.quartz.jobStore.tablePrefix" value="STB_"/>
+		<parameter name="org.quartz.jobStore.isClustered" value="false"/>
+		<!-- Configure Datasources -->
+		<parameter name="org.quartz.dataSource.database01.driver" value="org.postgresql.Driver"/>
+		<parameter name="org.quartz.dataSource.database01.URL" value="jdbc:postgresql://semarchy-xdi-runtime-backend-database:5432/postgres"/>
+		<parameter name="org.quartz.dataSource.database01.user" value="postgres"/>
+		<parameter name="org.quartz.dataSource.database01.password" value="postgres"/>
+		<parameter name="org.quartz.dataSource.database01.connectionProvider.class" value="com.indy.engine.scheduler.XdiQuartzConnectionProvider"/>
+		<parameter name="org.quartz.dataSource.database01.maxConnections" value="5"/>
+		<parameter name="org.quartz.dataSource.database01.validationQuery" value=""/>
+		<parameter name="org.quartz.dataSource.database01.module" value="BACKEND-DATABASE"/>
+	</scheduler>	
 
 	<!-- External Value Resolver Configuration	-->
 	<externalValueResolver>

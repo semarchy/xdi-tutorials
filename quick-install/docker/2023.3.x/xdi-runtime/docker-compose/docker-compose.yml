@@ -33,8 +33,9 @@ services:
  semarchy-xdi-runtime-backend-database:
     image: postgres:14
     user: postgres
-    ports:
-      - '5433:5432'
+    # To access the Runtime's Session Logs or Scheduler database from the outside, open the database port.
+    #ports:
+    #  - '5433:5432'
     networks:
       - semarchy-net
     healthcheck:

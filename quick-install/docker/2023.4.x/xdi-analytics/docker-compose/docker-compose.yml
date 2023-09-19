@@ -6,7 +6,7 @@ networks:
 
 services:
   semarchy-xdi-analytics:
-    image: semarchy/xdi-analytics:2023.2.0
+    image: semarchy/xdi-analytics:2023.4.0
     ports:
       - '8098:8080'
     depends_on:
@@ -37,8 +37,6 @@ services:
   semarchy-xdi-analytics-backend-database:
     image: postgres:14
     user: postgres
-    ports:
-      - '5434:5432'
     networks:
       - semarchy-net
     healthcheck:
