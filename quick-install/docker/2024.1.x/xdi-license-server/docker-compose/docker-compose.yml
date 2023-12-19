@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  semarchy-xdi-license-server:
+    container_name: semarchy-xdi-license-server
+    image: semarchy/xdi-license-server:2024.1.0
+    ports:
+    # Internal port must match with defined port in license.xml file
+    - '42900:42900'
+    volumes:
+    # The license.xml file have to be added into the shared-resources folder
+    - './shared-resources/license.xml:/opt/semarchy/xdi-license-server/license.xml'
+    - './shared-resources/conf/spring-context.xml:/opt/semarchy/xdi-license-server/conf/spring-context.xml'
+    # The keystore file have to be added into the shared-resources/conf folder    
+    - './shared-resources/conf/keystore.jks:/opt/semarchy/xdi-license-server/conf/keystore.jks'
+    - './shared-resources/conf/realm.properties:/opt/semarchy/xdi-license-server/conf/realm.properties'
