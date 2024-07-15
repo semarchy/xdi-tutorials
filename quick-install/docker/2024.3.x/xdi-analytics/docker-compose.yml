@@ -1,0 +1,63 @@
+version: '3.8'
+
+networks:
+  semarchy-net:
+    driver: bridge
+
+services:
+  semarchy-xdi-analytics:
+    image: semarchy/xdi-analytics:2024.3.0
+    ports:
+      - '8098:8080'
+    depends_on:
+      semarchy-xdi-analytics-backend-database:
+        condition: service_healthy
+    networks:
+      - semarchy-net
+    container_name: semarchy-xdi-analytics            
+    environment:
+      # Backend database access
+      - XDI_ANALYTICS_DB_JDBC_DRIVER_CLASS_NAME=org.postgresql.Driver
+      - XDI_ANALYTICS_DB_JDBC_URL=jdbc:postgresql://semarchy-xdi-analytics-backend-database:5432/postgres
+      - XDI_ANALYTICS_DB_JDBC_USERNAME=postgres
+      - XDI_ANALYTICS_DB_JDBC_PASSWORD=postgres
+      # Default user logins
+      - XDI_ANALYTICS_DEFAULT_ADMIN_USERNAME=semarchy
+      - XDI_ANALYTICS_DEFAULT_ADMIN_PASSWORD=semarchy
+      - XDI_ANALYTICS_DEFAULT_VIEWER_USERNAME=viewer
+      - XDI_ANALYTICS_DEFAULT_VIEWER_PASSWORD=viewer
+
+    volumes:
+      # xDI Analytics webapphome (do not change)
+      - ./shared-resources/analytics-webapp-home:/opt/semarchy/xdi-analytics/webapphome
+      # Tomcat configuration and additional libraries
+      - ./shared-resources/tomcat-additional-libraries:/usr/local/tomcat/additional-libraries
+      - ./shared-resources/tomcat-configuration-files/context.xml:/usr/local/tomcat/conf/context.xml
+      - ./shared-resources/tomcat-configuration-files/tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml
+  semarchy-xdi-analytics-backend-database:
+    image: postgres:14
+    user: postgres
+    networks:
+      - semarchy-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      # - ./create-schemas.sql:/docker-entrypoint-initdb.d/create-schemas.sql
+      # (Optional) Volumes persisting the database container data
+      - pgdata-semarchy-xdi-analytics:/var/lib/postgresql/data
+      - pgconf-semarchy-xdi-analytics:/etc/postgresql
+      - pglog-semarchy-xdi-analytics:/var/log/postgresql
+volumes:
+  pgdata-semarchy-xdi-analytics:
+    driver: local
+  pgconf-semarchy-xdi-analytics:
+    driver: local
+  pglog-semarchy-xdi-analytics:
+    driver: local
