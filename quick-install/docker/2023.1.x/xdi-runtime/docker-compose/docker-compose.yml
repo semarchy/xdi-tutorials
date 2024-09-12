@@ -5,7 +5,7 @@ networks:
     driver: bridge
 services:
  semarchy-xdi-runtime:
-  image: semarchy/xdi-runtime:2023.1.17
+  image: semarchy/xdi-runtime:2023.1.18
   networks:
   - semarchy-net
   container_name: semarchy-xdi-runtime
