@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/context
+                            http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- SSL configuration -->
+	<!-- this can be used to override the default SSL configuration and default certificate used. -->
+	<bean
+		class="com.semarchy.xdi.license.server.plugin.ssl.impl.DesignerSslPlugin">	
+		<!-- enableSsl: enable SSL -->			
+		<property name="enableSsl" value="true"></property>
+		<!-- disableSNIHostCheck: This parameter allows to enable or disable SNI (Server Name Indication) host check -->
+		<!--<property name="disableSNIHostCheck" value="false"></property>-->		
+		<!-- keyStoreType: The keyStore type -->					
+		<property name="keyStoreType" value="JKS"></property>
+		<!-- keyStore:  The relative or absolute path to the keyStore -->					
+		<property name="keyStore" value="/opt/semarchy/xdi-license-server/conf/keystore.jks"></property>
+		<!-- keyStorePassword: The keyStore password -->					
+		<property name="keyStorePassword" value=""></property>
+		<!-- keyAlias: The certificate alias to be used -->					
+		<property name="keyAlias" value=""></property>
+		<!-- keyPassword: The certificate password -->					
+		<property name="keyPassword" value=""></property>
+	</bean>
+	
+	<!-- TLS configuration -->
+	<!-- this can be used to choose TLS protocols to use.
+	     this configuration can be use with the default 
+		 certificate used or with a custom one using DesignerSslPlugin configuration. -->
+	<!--<bean-->
+		<!--class="com.semarchy.xdi.license.server.plugin.tls.impl.DesignerTlsPlugin">-->
+		<!-- includeProtocols: list of TLS protocols to use -->
+		<!--<property name="includeProtocols">-->
+			<!--<array value-type="java.lang.String">-->
+				<!--<value>TLSv1.2</value>-->
+			<!--</array>-->
+		<!--</property>-->
+		<!-- excludeProtocols: list of TLS protocols to refuse to use -->		
+		<!--<property name="excludeProtocols">-->
+			<!--<array value-type="java.lang.String">-->
+				<!--<value>TLSv1</value>-->			
+				<!--<value>TLSv1.1</value>-->		
+				<!--<value>TLSv1.2</value>-->
+			<!--</array>-->
+		<!--</property>-->
+	<!--</bean>-->
+
+
+	<!-- Define a list of xDI License Server group / filter combination -->										
+	<!--<bean class="com.semarchy.xdi.license.server.plugin.impl.DesignerFilterManager">-->	
+		<!--<property name="plugins">-->	
+			<!--<map>-->	
+				<!-- associate a license.xml group (in the key attribute) to a filter (in the value-ref attribute)  -->									
+				<!--<entry key="default" value-ref="ldapFilter"></entry>-->	
+			<!--</map>-->			
+		<!--</property>-->	
+	<!--</bean>-->	
+
+	<!-- LDAP configuration -->	
+	<!--<bean id="contextSource"-->
+		<!--class="org.springframework.ldap.core.support.LdapContextSource">-->
+		<!-- url: The LDAP URL. format: ldap://<IP_ADDRESS>:<PORT> -->	
+		<!--<property name="url" value="ldap://xx.xx.xx.xx:yyy" />-->
+		<!-- userDn: The LDAP user to use -->	
+		<!--<property name="userDn" value="cn=admin,dc=myorganization,dc=org" />-->
+		<!-- password: The LDAP user password -->			
+		<!--<property name="password" value="LDAP_PASSWORD" />-->
+	<!--</bean>-->
+
+	<!--<bean id="ldapTemplate"-->
+		<!--class="org.springframework.ldap.core.LdapTemplate">-->
+		<!--<constructor-arg ref="contextSource" />-->
+	<!--</bean>-->
+
+	<!-- LDAP filter -->	
+	<!--<bean id="ldapFilter"-->
+		<!--class="com.semarchy.xdi.license.server.plugin.impl.DesignerFilterLdapPlugin">-->
+		<!--<constructor-arg ref="ldapTemplate" />-->
+		<!-- base: The search base defines the starting point for the search in the directory tree -->	
+		<!--<property name="base" value="ou=people,dc=myorganization,dc=org"/>-->
+		<!-- filter: The filter to use in the search
+			Note: use &amp; string as AND (&) operator 
+		-->
+		<!--<property name="filter" value="objectClass=person"/>-->
+		<!-- userNameAttribute: LDAP attribute containing the allowed username -->		
+		<!--<property name="userNameAttribute" value="userName"/>-->
+		<!-- searchScope: Specifies the portion of the target subtree that should be considered. Supported search scope values are:
+			0: baseObject (also known as "base"):  only the entry specified as the search base should be considered.
+			1: singleLevel (also known as "one"):  only the immediate children of the entry specified as the search base should be considered. 
+			2: wholeSubtree (also known as "sub"): indicates that the entry specified as the search base, and all of its subordinates to any depth, should be considered.
+		-->
+		<!--<property name="searchScope" value="2"/>-->
+		<!-- logUserListAtStartup: Enable logging user "userNameAttribute" attribute when starting the server -->	
+		<!--<property name="logUserListAtStartup" value="true"/>-->
+		<!-- refreshInterval: Filter refresh interval (in seconds). Default value is 30 seconds -->			
+		<!--<property name="refreshInterval" value="600"/>-->	
+	<!--</bean>-->
+	
+</beans>
