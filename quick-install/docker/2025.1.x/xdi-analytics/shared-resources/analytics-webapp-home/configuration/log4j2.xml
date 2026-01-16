@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="30">
+	<Properties>
+		<Property name="fileSize">10 MB</Property>
+		<Property name="fileNumber">5</Property>
+	</Properties>
+	<Appenders>
+		<!-- Console appender configuration -->
+		<Console name="console" target="SYSTEM_OUT"
+			ignoreExceptions="false">
+			<PatternLayout
+				pattern="%d{dd/MM/yyyy HH:mm:ss,SSS} %-5p %F - %m%n" />
+		</Console>
+		<RollingFile name="rolling_appender"
+			fileName="${sys:log-directory}/queryLogger.log"
+			filePattern="${sys:log-directory}/queryLogger.log.%i.log">
+			<PatternLayout>
+				<Pattern>%d{dd/MM/yyyy HH:mm:ss,SSS} %-5p %F - %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="${fileSize}" />
+			</Policies>
+			<DefaultRolloverStrategy max="${fileNumber}" />
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<Logger name="RdbmsLogQuery" level="debug" additivity="false">
+			<AppenderRef ref="rolling_appender" />
+		</Logger>
+		<Logger name="PersistenceLogger" level="error" additivity="false">
+			<AppenderRef ref="console" />
+		</Logger>
+		<!-- Root logger referring to console appender -->
+		<Root level="info">
+			<AppenderRef ref="console" />
+		</Root>
+	</Loggers>
+</Configuration>

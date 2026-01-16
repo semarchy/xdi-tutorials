@@ -5,7 +5,7 @@ networks:
 
 services:
   semarchy-xdi-analytics:
-    image: semarchy/xdi-analytics:2025.1.5
+    image: semarchy/xdi-analytics:2026.1.0
     ports:
       - '8098:8080'
     depends_on:

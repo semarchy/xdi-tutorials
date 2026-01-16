@@ -1,7 +1,7 @@
 services:
   semarchy-xdi-license-server:
     container_name: semarchy-xdi-license-server
-    image: semarchy/xdi-license-server:2025.1.5
+    image: semarchy/xdi-license-server:2026.1.0
     ports:
     # Internal port must match with defined port in license.xml file
     - '42900:42900'
